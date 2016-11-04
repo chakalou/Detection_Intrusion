@@ -13,7 +13,8 @@
 * MODIFS     : 
 *
 * DESCRIPTION:
-*    Procedure de stockage et affichage des messages d'erreurs.
+*    librairie permettant d'envoyer des message au karotz pour le faire parler ou lui faire 
+*    prendre des photos.
 *
 ***********************************************************************CBA*/
 #include <errno.h>
