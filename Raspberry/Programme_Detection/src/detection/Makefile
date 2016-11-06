@@ -31,7 +31,7 @@ TILDE    = $(CURDIR)/*~
 CC=/usr/bin/gcc
 CC_FLAGS =	-DLINUX -D_GNU_SOURCE -D_REENTRANT -g -Wpadded   
 
-APPLI_FLAGS = -I/usr/include -I/usr/local/include -I$(CURDIR) -I$(DIR_INCLUDE)  -L/usr/local/lib -lcurl -lwiringPi -lsqlite3
+APPLI_FLAGS = -I/usr/include -I/usr/local/include -I$(CURDIR) -I../../include  -L/usr/local/lib -lcurl -lwiringPi -lsqlite3
 
 CFLAGS = $(CC_FLAGS) $(APPLI_FLAGS)
 
