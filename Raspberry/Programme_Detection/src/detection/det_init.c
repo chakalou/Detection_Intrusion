@@ -2,11 +2,11 @@
 *
 * NOM         : det_init.c
 *
-* PROJET      : Detection
+* PROJET      : PSCL
 * PROCESS     :
 * TYPE        : Include C
 *
-* ECRIT PAR   : LOLIO                   25/06/2013
+* ECRIT PAR   : D. DELEFORTERIE                   25/06/2013
 *
 * MODIFS      :
 *
@@ -73,24 +73,23 @@ det_init()
 	lib_kartoz_set_led(0,"000000",0,"000000");
 	/*initialisation de la connection serie*/	
 	lib_erreur(0,0,"det_init: port serie");
-	if(!lib_serial_init(PORT_NAME))
-		det_quit();
-	lib_serial_config();
-	
+
 	lib_erreur(0,0,"det_init: base");
 	/*init nombase*/
 	strcpy(G_nomdb,"detection.db");
-	strcpy(G_mail,"pouet@gmail.com");
-	strcpy(G_numero,"+336xxxxxxxx");
 	/*creation de la table detection si elle n'existe pas*/
 	if(!det_sqlite_createtable(G_nomdb))
 		det_quit();
 		
 	lib_erreur(0,0,"det_init: det_charge_struct_detect");
 	det_charge_struct_detect();
-	
-	
+	lib_erreur(0,0,"det_init: det_charge_struct_contact");
+	det_charge_struct_contact();
 
+	if(!lib_serial_init(PORT_NAME))
+		det_quit();
+	lib_serial_config();
+	
 } /* end det_init() */
 void
 det_charge_struct_detect()
@@ -112,7 +111,7 @@ det_charge_struct_detect()
 	  strcpy(G_Detecteurs.Liste_det[i].nomficimage,"");
 	}
 	
-	strcpy(sqlcmde, "select * from yana_plugin_detection; ");
+	strcpy(sqlcmde, "select * from yana_detecteur; ");
 	if(!det_sqlite_select((void*) &G_Detecteurs,G_nomdb, sqlcmde, callback_detec))
 		det_quit();
 	firstinit=1;
@@ -126,6 +125,45 @@ det_charge_struct_detect()
 		  G_Detecteurs.Liste_det[i].codedetec,
 		  G_Detecteurs.Liste_det[i].numimage,
 		  G_Detecteurs.Liste_det[i].nomficimage);
+		  lib_erreur(0,0,G_msgerr);
+	}
+	lib_erreur(0,0,"FIN det_charge_struct_detect ");
+
+}
+void
+det_charge_struct_contact()
+{
+	char sqlcmde[256];
+	/*variable first init au cas où on veut traiter le rechargement de la config via siguser1*/
+	firstinit=0;
+	
+	/*Initialisation de la structure contenant les contacts*/
+	int i;
+	lib_erreur(0,0,"DEB det_charge_struct_contact ");
+	G_Contacts.Nbcontact=0;
+	for(i=0;i<MAX_CONTACT;i++)
+	{
+	  G_Contacts.Liste_contact[i].idcontact=-1;
+	  strcpy(G_Contacts.Liste_contact[i].tel,"");
+	  strcpy(G_Contacts.Liste_contact[i].adremail,"");
+	  G_Contacts.Liste_contact[i].notifysms=0;
+	  G_Contacts.Liste_contact[i].notifymail=0;
+	}
+	
+	strcpy(sqlcmde, "select * from yana_contact; ");
+	if(!det_sqlite_select((void*) &G_Contacts,G_nomdb, sqlcmde, callback_contact))
+		det_quit();
+	firstinit=1;
+	
+	/*On affiche la structure*/
+	for(i=0;i<MAX_CONTACT;i++)
+	{
+		sprintf(G_msgerr, "id=%d,tel=%s,mail=%s,notifysms=%d,notifymail=%d",
+		  G_Contacts.Liste_contact[i].idcontact,
+		  G_Contacts.Liste_contact[i].tel,
+		  G_Contacts.Liste_contact[i].adremail,
+		  G_Contacts.Liste_contact[i].notifysms,
+		  G_Contacts.Liste_contact[i].notifymail);
 		  lib_erreur(0,0,G_msgerr);
 	}
 	lib_erreur(0,0,"FIN det_charge_struct_detect ");

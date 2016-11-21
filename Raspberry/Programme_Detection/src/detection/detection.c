@@ -2,11 +2,11 @@
 *
 * NOM         : detection.c
 *
-* PROJET      : Detection
+* PROJET      : PSCL
 * PROCESS     :
 * TYPE        : Include C
 *
-* ECRIT PAR   : LOLIO                   25/06/2013
+* ECRIT PAR   : D. DELEFORTERIE                   25/06/2013
 *
 * MODIFS      : 
 *
@@ -74,10 +74,10 @@ char   **P_argv;
     sprintf( derr,   "%s", getenv( "DIR_ERREUR" ) );
     sprintf( dparam, "%s", getenv( "DIR_PARAMETRAGE" ) );
     lib_erreur_init( P_argv[0], derr );
-    lib_erreur( 0, 0, "Debut DIFFUSE" );
+    lib_erreur( 0, 0, "Debut DETECTION" );
 
-    /* NB: Au moment ou DIFFUSE est lance par GP, GP a      */
-    /*  masque ces 4 signaux. DIFFUSE herite de ce masquage.*/
+    /* NB: Au moment ou DETECTION est lance par GP, GP a      */
+    /*  masque ces 4 signaux. DETECTION herite de ce masquage.*/
     /*  Donc, il faut les rajouter artificiellement au      */
     /*  lancement !!!                                       */
     /*------------------------------------------------------*/
@@ -232,10 +232,12 @@ int det_detection(T_Detecteur* detecteur)
 	char cmd[512];	
 	char msg[256];
 	char nomfickarotz[256];
+	char mailnotif[256];
+	int i;
 	lib_erreur(0,0,"DEB det_detection");	
 	/*Sauvegarde de la detection en base*/
 	sprintf(detecteur->nomficimage,"%d_%04d.jpg",detecteur->iddetecteur, detecteur->numimage);
-	sprintf(sqlcmde, "INSERT INTO DETECTION(ID_DETECTEUR, IMAGE, DATE) VALUES(%d,'%s',datetime('now'));", detecteur->iddetecteur, detecteur->nomficimage);
+	sprintf(sqlcmde, "INSERT INTO yana_detection(ID_DETECTEUR, IMAGE, DATE) VALUES(%d,'%s',datetime('now'));", detecteur->iddetecteur, detecteur->nomficimage);
 	det_sqlite_executerequete(G_nomdb, sqlcmde);
 	
 	/*On prend une photo*/
@@ -249,22 +251,32 @@ int det_detection(T_Detecteur* detecteur)
 	
 	lib_sleep_sec( 7, 0 );
 	
-	/*On envoi le mail*/
-	lib_erreur(0,0,"Une détection a eu lieu ! ==> envoi d'un mail d'alerte à raspilolio");
-	sprintf(cmd, "echo \"ceci est un mail d'alerte !\" | mail -s \"alerte\" -a \"%s\" %s", cheminphoto, G_mail );
-	lib_erreur(0,0,cmd);
-	system(cmd);
-	sprintf(cmd, "echo \"ceci est un mail d'alerte !\" | mail -s \"alerte_karotz\" -a \"%s/%s.jpg\" %s", DIR_IMAGE,nomfickarotz, G_mail );
-	lib_erreur(0,0,cmd);
-	system(cmd);
-	
-	/*On envoie un sms*/
-	sprintf(cmd, "sudo gammu-smsd-inject TEXT %s -text 'une detection a eu lieu : detec=%d salle=%s. Mail envoye sur %s' > /home/pi/Projet/log/sms.log 2>&1 &",
-	G_numero,detecteur->iddetecteur,
-	detecteur->piece,G_mail );
-	lib_erreur(0,0,cmd);
-	system(cmd);
-	
+	for(i=0;i<G_Contacts.Nbcontact;i++)
+	{
+		if(G_Contacts.Liste_contact[i].notifymail)
+		{
+			sprintf(mailnotif,"Mail envoye sur %s",G_Contacts.Liste_contact[i].notifymail);
+			/*On envoi le mail*/
+			lib_erreur(0,0,"Une détection a eu lieu ! ==> envoi d'un mail d'alerte à raspilolio");
+			sprintf(cmd, "echo \"ceci est un mail d'alerte !\" | mail -s \"alerte\" -a \"%s\" %s", cheminphoto, G_Contacts.Liste_contact[i].adremail );
+			lib_erreur(0,0,cmd);
+			system(cmd);
+			sprintf(cmd, "echo \"ceci est un mail d'alerte !\" | mail -s \"alerte_karotz\" -a \"%s/%s.jpg\" %s", DIR_IMAGE,nomfickarotz, G_Contacts.Liste_contact[i].adremail );
+			lib_erreur(0,0,cmd);
+			system(cmd);
+		}
+		else
+			strcpy(mailnotif,"");
+		if(G_Contacts.Liste_contact[i].notifysms)
+		{
+			/*On envoie un sms*/
+			sprintf(cmd, "sudo gammu-smsd-inject TEXT %s -text 'une detection a eu lieu : detec=%d salle=%s. %s' > /home/pi/Projet/log/sms.log 2>&1 &",
+			G_Contacts.Liste_contact[i].tel,detecteur->iddetecteur,
+			detecteur->piece,mailnotif );
+			lib_erreur(0,0,cmd);
+			system(cmd);
+		}
+	}
 	/*On notifie karotz*/
 	sprintf(msg,"Alerte detection %s",detecteur->piece);
     lib_kartoz_speak(msg);

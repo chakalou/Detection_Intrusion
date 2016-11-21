@@ -2,13 +2,13 @@
 *
 * NOM         : det_proto.h
 *
-* PROJET      : Detection
+* PROJET      : PSCL
 *
 * PROCESS     :
 *
 * TYPE        : Include C
 *
-* ECRIT PAR   : LOLIO                   25/06/2013
+* ECRIT PAR   : D. DELEFORTERIE                   25/06/2013
 *
 * MODIFS      :
 *
@@ -30,7 +30,7 @@ extern void           det_quit_SIGTERM();
 /*-------------------------*/
 extern void           det_init();
 extern void			  det_charge_struct_detect();
-
+extern void			  det_charge_struct_contact();
 /* procedures de det_timer.c */
 /* ------------------------ */
 extern void           det_timer_init();
@@ -56,6 +56,7 @@ extern int det_sqlite_executerequete(char * nombase, char* sqlcmde);
 
 /*callback pour select*/
 extern int callback_detec(void *data, int argc, char **argv, char **azColName);
+extern int callback_contact(void *data, int argc, char **argv, char **azColName);
 extern int callback_image(void *data, int argc, char **argv, char **azColName);
 extern int callback(void *data, int argc, char **argv, char **azColName);
 

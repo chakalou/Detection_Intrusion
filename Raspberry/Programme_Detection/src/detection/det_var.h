@@ -2,13 +2,13 @@
 *
 * NOM         : det_var.h
 *
-* PROJET      : Detection
+* PROJET      : PSCL
 *
 * PROCESS     :
 *
 * TYPE        : Include C
 *
-* ECRIT PAR   : LOLIO                   25/06/2013
+* ECRIT PAR   : D. DELEFORTERIE                   25/06/2013
 *
 * MODIFS      :
 *
@@ -22,12 +22,10 @@ short G_Pin_Detection;
 int G_cpt_attente;
 
 T_Detecteur_List G_Detecteurs;
+T_Contact_List   G_Contacts;
 int firstinit;
 
-/*G_nomdb*/
 char G_nomdb[124];
-char G_mail[128];
-char G_numero[128];
 
 #endif
 

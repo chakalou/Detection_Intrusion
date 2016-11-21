@@ -2,13 +2,13 @@
 *
 * NOM         : det_type.h
 *
-* PROJET      : Detection
+* PROJET      : PSCL
 *
 * PROCESS     :
 *
 * TYPE        : Include C
 *
-* ECRIT PAR   : LOLIO                   25/06/2013
+* ECRIT PAR   : D. DELEFORTERIE                   25/06/2013
 *
 * MODIFS      :
 *
@@ -28,6 +28,21 @@ typedef struct
 	int  numimage;
 	char nomficimage[16];
 }T_Detecteur;
+
+typedef struct
+{
+	short idcontact; // Id contact (unique)
+	char tel[16]; //Telephone
+	char adremail[128]; //adressmail
+	short notifysms; //bool notif sms
+	short notifymail; //bool notif mail
+}T_Contact;
+
+typedef struct
+{
+	T_Contact Liste_contact[MAX_CONTACT];
+	int Nbcontact;
+}T_Contact_List;
 
 typedef struct
 {

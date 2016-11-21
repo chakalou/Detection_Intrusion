@@ -2,11 +2,11 @@
 *
 * NOM         : det_sqlite.c
 *
-* PROJET      : Detection
+* PROJET      : PSCL
 * PROCESS     :
 * TYPE        : Include C
 *
-* ECRIT PAR   : LOLIO                   25/06/2013
+* ECRIT PAR   : D. DELEFORTERIE                   25/06/2013
 *
 * MODIFS      :
 *
@@ -147,9 +147,9 @@ int det_sqlite_createtable(char * nombase)
 	char sql[256];
 	
  /* Creation de la table detection */
-	 strcpy(sql, "DROP TABLE IF EXISTS DETECTION; " 
-		 "CREATE TABLE IF NOT EXISTS DETECTION ( "
-		 "ID_DETECTION  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
+	 strcpy(sql, "DROP TABLE IF EXISTS yana_detection; " 
+		 "CREATE TABLE IF NOT EXISTS yana_detection ( "
+		 "ID  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
 		 "ID_DETECTEUR INTEGER NOT NULL, "
 		 "IMAGE TEXT, "
 		 "DATE DATE NOT NULL);");
@@ -179,7 +179,7 @@ int callback_detec(void *ListDetecteur, int argc, char **argv, char **azColName)
    detecencours=(( T_Detecteur_List*)ListDetecteur)->Nbdetect;
    for(i=0; i<argc; i++)
    {
-	  if(!strcmp(azColName[i],"id_detecteur"))
+	  if(!strcmp(azColName[i],"id"))
 		(( T_Detecteur_List*)ListDetecteur)->Liste_det[detecencours].iddetecteur=argv[i] ? atoi(argv[i]) : 0;
 	  else if(!strcmp(azColName[i],"piece"))
 		sprintf((( T_Detecteur_List*)ListDetecteur)->Liste_det[detecencours].piece,"%s",argv[i] ? argv[i] : "NULL");
@@ -195,6 +195,36 @@ int callback_detec(void *ListDetecteur, int argc, char **argv, char **azColName)
    (( T_Detecteur_List*)ListDetecteur)->Nbdetect++;
    return 0;
 }
+int callback_contact(void *GListContact, int argc, char **argv, char **azColName)
+{
+   int i;
+   int contactencours;
+   
+   if(firstinit!=0)
+   {
+		(( T_Contact_List*)GListContact)->Nbcontact=0;
+		firstinit=1;
+   
+   }
+   
+   contactencours=(( T_Contact_List*)GListContact)->Nbcontact;
+   for(i=0; i<argc; i++)
+   {
+	  if(!strcmp(azColName[i],"id"))
+		(( T_Contact_List*)GListContact)->Liste_contact[contactencours].idcontact=argv[i] ? atoi(argv[i]) : 0;
+	  else if(!strcmp(azColName[i],"mail"))
+		sprintf((( T_Contact_List*)GListContact)->Liste_contact[contactencours].adremail,"%s",argv[i] ? argv[i] : "NULL");
+	  else if(!strcmp(azColName[i],"tel"))
+		sprintf((( T_Contact_List*)GListContact)->Liste_contact[contactencours].tel,"%s",argv[i] ? argv[i] : "NULL");
+	  else if(!strcmp(azColName[i],"notifysms"))
+		(( T_Contact_List*)GListContact)->Liste_contact[contactencours].notifysms=argv[i] ? atoi(argv[i]) : 0;
+	  else if(!strcmp(azColName[i],"notifysms"))
+		(( T_Contact_List*)GListContact)->Liste_contact[contactencours].notifymail=argv[i] ? atoi(argv[i]) : 0;
+   }
+   (( T_Contact_List*)GListContact)->Nbcontact++;
+   return 0;
+}
+
 int callback(void *data, int argc, char **argv, char **azColName)
 {
 	return 0;
