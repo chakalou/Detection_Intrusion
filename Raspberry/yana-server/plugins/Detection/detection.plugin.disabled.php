@@ -25,48 +25,58 @@ function detection_plugin_page($_){
 	  <ul class="nav nav-tabs nav-stacked">
 	    <li  class="active"><a href="#gestiondemarrage"><i class="icon-chevron-right"></i> 1. Gestion démarrage/arrêt prog</a></li>
 	    <li><a href="#tableau""><i class="icon-chevron-right"></i> 2. Tableau détection</a></li>
-	    <li><a href=""><i class="icon-chevron-right"></i> 3. Menu 3</a></li>
-	    <li><a href=""><i class="icon-chevron-right"></i> 4. Menu <span class="badge badge-warning">4</span></a></li>
 	  </ul>
 	</div>
 
 	<div class="span9">
 
 
-	<h1>Détection</h1>
-	<p>Plugin permettant de gérer les détecteurs associés au Raspberry</p>
-	<div><h2 id="gestiondemarrage">Gestion démarrage / arrêt du programme</h2>
-	 <button class="btn" onclick="window.location='action.php?action=demarre_detection'">Démarrer détection</button>
-	<button class="btn" onclick="window.location='action.php?action=arret_detection'">Arrêt détection</button><br/> </div>
-		
-	    <h2 id="tableau">Tableau détection</h2>
-	    <table class="table table-striped table-bordered table-hover">
-	    <thead>
-	    <tr>
-	    <th>Title</th>
-	    <th>Title</th>
-	    </tr>
-	    </thead>
-	    <tr><td>col1</td><td>col2</td></tr>
-	    <tr><td>col3</td><td>col4</td></tr>
-	    </table>
+	<h1>Détection Intrusion</h1>
+	<p>Plugin de détection intrusion</p>
+	<div><legend id="gestiondemarrage">Gestion démarrage / arrêt du programme</legend>
+		 <table class="table table-striped table-bordered table-hover" >
+			<thead>
+				<tr>
+					<th>Programme</th>
+					<th>Statut</th>
+					<th></th>
+				</tr>
+			</thead>
 
-	    <h2>Barre de progression</h2>
-	    <div class="progress progress-striped active">
-	    <div class="bar" style="width: 40%;"></div>
-	    </div>
+			
+			<tr>
+				<td>detection.x</td>
+				<?php $toto=exec('ps -ef | egrep detection.x | egrep -v egrep | awk \'{print $2}\''); if($toto!=''){echo '<td style="background-color: #2EFA0A; "><b>marche</b></td>';}else{echo '<td style="background-color: #FA2F2F;"><b>arret</b></td>';}?>
+				<td><a class="btn" href="action.php?action=demarre_detection"><i class="icon-play"></i></a>
+					<a class="btn" href="action.php?action=arret_detection"><i class="icon-stop"></i></a></td>
+			</tr>
+		</table>
+		<?php
+			$viewdetecManager = new ViewDetection();
+			$viewdetecs = $viewdetecManager->populate();
+		?>
+	    <legend id="tableau">Tableau détection</legend>
+	 <table class="table table-striped table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>Date</th>
+								<th>Code détec</th>
+								<th>Pièce</th>
+								<th>image</th>
+							</tr>
+						</thead>
 
-	    <h2>Pagination</h2>
-	    <div class="pagination">
-	    <ul>
-	    <li><a href="#">Prev</a></li>
-	    <li><a href="#">1</a></li>
-	    <li><a href="#">2</a></li>
-	    <li><a href="#">3</a></li>
-	    <li><a href="#">4</a></li>
-	    <li><a href="#">5</a></li>
-	    <li><a href="#">Next</a></li>
-	    </ul>
+						<?php foreach($viewdetecs as $viewdetec){ ?>
+						<tr>
+							<td><?php echo $viewdetec->getDate(); ?></td>
+							<td><?php echo $viewdetec->getCodedetec(); ?></td>
+							<td><?php echo $viewdetec->getPiece(); ?></td>
+							<td><?php echo $viewdetec->getImage() ?></td>
+						</tr>
+						<?php } ?>
+						</table>
+
+	    
 	    </div>
 
 	</div>
@@ -83,6 +93,10 @@ function detection_plugin_setting_page(){
 	global $myUser,$_;
 	
 	if(isset($_['section']) && $_['section']=='detection' ){
+		/*on récupère l'état adm*/
+		$admManager = new Adm();
+		$adm = $admManager->getById(1);
+		
 		if($myUser!=false){
 			if (isset($_['block'])){
 				$block = $_['block'];
@@ -91,6 +105,9 @@ function detection_plugin_setting_page(){
 			{
 				$block='detec';
 			}
+			
+			
+			
 			switch($block){
 				case 'detec':
 					$detecteurManager = new Detecteur();
@@ -105,7 +122,7 @@ function detection_plugin_setting_page(){
 				}
 				else
 				{
-					$piece =  "Ajout d'un capteur";
+					$piece =  "Ajout d'un détecteur";
 					$button = "Ajouter";
 				} 
 
@@ -113,12 +130,12 @@ function detection_plugin_setting_page(){
 
 				<div class="span9 userBloc">
 				<ul class="nav nav-tabs">
-						<li  {if="'<?echo $block?>'=='detec'"}class="active"{/if}><a  href="setting.php?section=detection&block=detec"><i class="icon-chevron-right"></i> Détecteurs</a></li>
+						<li  {if="'<?echo $block?>'=='detec'"}class="active"{/if}><a  href="setting.php?section=detection&block=detec"><i class="icon-chevron-right"></i> Général</a></li>
 						<li {if="'<?echo $block?>'=='contact'"}class="active"{/if}><a  href="setting.php?section=detection&block=contact"><i class="icon-chevron-right"></i> Contacts</a></li>
 				</ul>
 
-					<h1>Détecteurs</h1>
-					<p>Gestion des détecteurs associés au plugin détection</p>  
+					<h1>Paramètres généraux du plugin</h1>
+					<legend> Liste des détecteurs </legend> 
 					<table class="table table-striped table-bordered table-hover">
 						<thead>
 							<tr>
@@ -154,6 +171,37 @@ function detection_plugin_setting_page(){
 						</fieldset>
 						<br/>
 					</form>
+					
+					<form action="action.php?action=detection_add_adm" method="POST"> 
+						<fieldset>
+							<legend> Gesion des prises de vues </legend>
+
+							<div class="left">
+							<? if(isset($adm)){echo '<input type="hidden" name="id_adm" value="'.$adm->getId().'">';} ?>
+								<table class="table table-striped table-bordered table-hover">
+								<thead>
+								<tr>
+								<td style="text-align: center; vertical-align: middle;"><label for="camera">Activer prise de vue camera raspberry</label></td>
+								 <td ><input type="checkbox" name="camera" id="camera" value="1" <?if(isset($adm)){if($adm->getCamera()==1){echo 'checked';}}?>/></td>
+								</tr>
+								</table>
+		
+								<table class="table table-striped table-bordered table-hover">
+								<thead>
+								<tr>
+								<td style="text-align: center; vertical-align: middle;"><label for="karotz">Activer intéraction via Karotz</label></td>
+								<td ><input type="checkbox" name="karotz" id="karotz" value="1" <?if(isset($adm)){if($adm->getKarotz()==1){echo 'checked';}}?>/></td>
+								</tr>
+								</table>
+							</div>
+
+							<div class="clear"></div>
+							<br/><button type="submit" class="btn">Enregistrer</button>
+						</fieldset>
+						<br/>
+					</form>
+					
+					
 
 					
 					</div>
@@ -214,7 +262,7 @@ function detection_plugin_setting_page(){
 							<legend><? echo $mail; ?></legend>
 
 							<div class="left">
-								<h2><label for="mail">Mail:</label></h2>
+								<p><label for="mail"><b>Mail</b></label></p>
 								<? if(isset($selected)){echo '<input type="hidden" name="id_contact" value="'.$id_mod.'">';} ?>
 								<input type="text" value="<? if(isset($selected)){echo $selected->getMail();} ?>" id="mail" name="mail" placeholder="Email..."/>
 								<table class="table table-striped table-bordered table-hover">
@@ -225,7 +273,7 @@ function detection_plugin_setting_page(){
 								</tr>
 								</table>
 								
-								<h2><label for="tel">Téléphone:</label></h2>
+								<p><label for="tel"><b>Téléphone</b></label></p>
 								<input type="text" value="<? if(isset($selected)){echo $selected->getTel();} ?>" name="tel" id="tel" placeholder="Numéro de téléphone..." />
 								<table class="table table-striped table-bordered table-hover">
 								<thead>
@@ -353,6 +401,38 @@ function detection_action_detection(){
 				$contactManager = new Contact();
 				$contactManager->delete(array('id'=>$_['id_contact']));
 				header('location:setting.php?section=detection&block=contact');
+			}
+			else
+			{
+				header('location:setting.php?section=detection&error=Vous n\'avez pas le droit de faire ça!');
+			}
+		break;
+		case 'detection_add_adm':
+			$message='id='.$_['id_adm']/*.'camera= '.$adm->getCamera().'karotz='.$adm->getKarotz().$adm->getId*/;
+			echo '<script type="text/javascript">window.alert("'.$message.'");</script>';
+			$right_toverify = isset($_['id_adm']) ? 'u' : 'c';
+			if($myUser->can('detection',$right_toverify))
+			{
+				$adm = new Adm();
+				if ($right_toverify == "u"){$adm = $adm->load(array("id"=>$_['id_adm']));}
+				if(isset($_['camera']))
+					{
+						$adm->setCamera($_['camera']);
+					}
+					else
+					{
+						$adm->setCamera(0);
+					}
+					if(isset($_['karotz']))
+					{
+						$adm->setKarotz($_['karotz']);
+					}
+					else
+					{
+						$adm->setKarotz(0);
+					}
+				$adm->save();
+				header('location:setting.php?section=detection&block=detec');
 			}
 			else
 			{

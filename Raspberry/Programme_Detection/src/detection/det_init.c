@@ -67,13 +67,17 @@ void
 det_init()
 {
 	char cmd[256];
-	lib_erreur(0,0,"lib_kartoz_speak");
-	lib_kartoz_speak("debut detection intrusion");
-	lib_erreur(0,0,"lib_kartoz_set_led");
-	lib_kartoz_set_led(0,"000000",0,"000000");
-	/*initialisation de la connection serie*/	
-	lib_erreur(0,0,"det_init: port serie");
-
+	if(G_Adm.karotz)
+	{
+		lib_erreur(0,0,"lib_kartoz_speak");
+		lib_kartoz_speak("debut detection intrusion");
+		lib_erreur(0,0,"lib_kartoz_set_led");
+		lib_kartoz_set_led(0,"000000",0,"000000");
+	}
+	/*on supprime les anciennes images*/
+	sprintf(cmd, "\\rm /home/pi/Projet/images/ *.jpg\" > /home/pi/Projet/log/cmd.log");
+	lib_erreur(0,0,cmd);
+	
 	lib_erreur(0,0,"det_init: base");
 	/*init nombase*/
 	strcpy(G_nomdb,"detection.db");
@@ -85,7 +89,11 @@ det_init()
 	det_charge_struct_detect();
 	lib_erreur(0,0,"det_init: det_charge_struct_contact");
 	det_charge_struct_contact();
-
+	lib_erreur(0,0,"det_init: det_charge_struct_contact");
+	det_charge_struct_adm();
+	
+	/*initialisation de la connection serie*/	
+	lib_erreur(0,0,"det_init: port serie");
 	if(!lib_serial_init(PORT_NAME))
 		det_quit();
 	lib_serial_config();
@@ -167,6 +175,36 @@ det_charge_struct_contact()
 		  lib_erreur(0,0,G_msgerr);
 	}
 	lib_erreur(0,0,"FIN det_charge_struct_detect ");
+
+}
+void
+det_charge_struct_adm()
+{
+	char sqlcmde[256];
+	/*variable first init au cas où on veut traiter le rechargement de la config via siguser1*/
+	firstinit=0;
+	
+	/*Initialisation de la structure contenant les contacts*/
+	int i;
+	lib_erreur(0,0,"DEB det_charge_struct_adm ");
+
+	  G_Adm.karotz=-1;
+	  G_Adm.camera=-1;
+	
+	
+	strcpy(sqlcmde, "select * from yana_adm; ");
+	if(!det_sqlite_select((void*) &G_Adm,G_nomdb, sqlcmde, callback_adm))
+		det_quit();
+	firstinit=1;
+	
+	/*On affiche la structure*/
+	
+		sprintf(G_msgerr, "karotz=%d,cam=%d",
+		  G_Adm.karotz,
+		  G_Adm.camera);
+		  lib_erreur(0,0,G_msgerr);
+	
+	lib_erreur(0,0,"FIN det_charge_struct_adm ");
 
 }
 

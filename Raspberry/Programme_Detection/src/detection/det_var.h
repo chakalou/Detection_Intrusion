@@ -23,6 +23,7 @@ int G_cpt_attente;
 
 T_Detecteur_List G_Detecteurs;
 T_Contact_List   G_Contacts;
+T_Adm			 G_Adm;
 int firstinit;
 
 char G_nomdb[124];

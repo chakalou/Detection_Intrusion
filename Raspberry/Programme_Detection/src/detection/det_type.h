@@ -51,5 +51,11 @@ typedef struct
 	int NumImage;
 }T_Detecteur_List;
 
+typedef struct
+{
+	int camera;
+	int karotz;
+}T_Adm;
+
 #endif
 

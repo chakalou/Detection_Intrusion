@@ -19,6 +19,7 @@
 #include "det_type.h"
 #include "det_proto.h"
 #include "det_const.h"
+#include <unistd.h>
 
 /* pour connaitre G_msgerr.. */
 /* ------------------------- */
@@ -47,6 +48,7 @@ void           det_trt_loop();
 void			  det_trt();
 int det_analysedetec(char* buffer);
 int det_detection(T_Detecteur* detecteur);
+int test_fic(char* cheminfic);
 
 /*XYZ*********************************************************************
 / NOM         : main()
@@ -200,7 +202,7 @@ int det_analysedetec(char* buffer)
 	}
 	
 	/*on cherche le detecteur dont le code de detection correspond au message*/
-	for(i=0;i<MAX_DETECTEUR;i++)
+	for(i=0;i<G_Detecteurs.Nbdetect;i++)
 	{
 		if(G_Detecteurs.Liste_det[i].codedetec==codedetecteur)
 		{
@@ -236,17 +238,27 @@ int det_detection(T_Detecteur* detecteur)
 	int i;
 	lib_erreur(0,0,"DEB det_detection");	
 	/*Sauvegarde de la detection en base*/
-	sprintf(detecteur->nomficimage,"%d_%04d.jpg",detecteur->iddetecteur, detecteur->numimage);
+	if(G_Adm.camera || G_Adm.karotz)
+		sprintf(detecteur->nomficimage,"%d_%04d.jpg",detecteur->iddetecteur, detecteur->numimage);
+	else
+		strcpy(detecteur->nomficimage,"");
+	
 	sprintf(sqlcmde, "INSERT INTO yana_detection(ID_DETECTEUR, IMAGE, DATE) VALUES(%d,'%s',datetime('now'));", detecteur->iddetecteur, detecteur->nomficimage);
 	det_sqlite_executerequete(G_nomdb, sqlcmde);
 	
 	/*On prend une photo*/
-	sprintf(cheminphoto,"%s/%s", DIR_IMAGE,detecteur->nomficimage );
-	sprintf(cmd, "raspistill -o \"%s\" > /home/pi/Projet/log/cmd.log",  cheminphoto);
-	lib_erreur(0,0,cmd);
-	system(cmd);
-	sprintf(nomfickarotz,"karotz_%d_%04d",detecteur->iddetecteur, detecteur->numimage);
-	lib_kartoz_photo(DIR_IMAGE,nomfickarotz);
+	if(G_Adm.camera)
+	{
+		sprintf(cheminphoto,"%s/%s", DIR_IMAGE,detecteur->nomficimage );
+		sprintf(cmd, "raspistill -o \"%s\" > /home/pi/Projet/log/cmd.log",  cheminphoto);
+		lib_erreur(0,0,cmd);
+		system(cmd);
+	}
+	if(G_Adm.karotz)
+	{
+		sprintf(nomfickarotz,"karotz_%d_%04d",detecteur->iddetecteur, detecteur->numimage);
+		lib_kartoz_photo(DIR_IMAGE,nomfickarotz);
+	}
 	detecteur->numimage++;
 	
 	lib_sleep_sec( 7, 0 );
@@ -255,13 +267,23 @@ int det_detection(T_Detecteur* detecteur)
 	{
 		if(G_Contacts.Liste_contact[i].notifymail)
 		{
-			sprintf(mailnotif,"Mail envoye sur %s",G_Contacts.Liste_contact[i].notifymail);
+			
+			sprintf(mailnotif,"Mail envoye sur %s",G_Contacts.Liste_contact[i].adremail);
 			/*On envoi le mail*/
 			lib_erreur(0,0,"Une détection a eu lieu ! ==> envoi d'un mail d'alerte à raspilolio");
-			sprintf(cmd, "echo \"ceci est un mail d'alerte !\" | mail -s \"alerte\" -a \"%s\" %s", cheminphoto, G_Contacts.Liste_contact[i].adremail );
-			lib_erreur(0,0,cmd);
-			system(cmd);
-			sprintf(cmd, "echo \"ceci est un mail d'alerte !\" | mail -s \"alerte_karotz\" -a \"%s/%s.jpg\" %s", DIR_IMAGE,nomfickarotz, G_Contacts.Liste_contact[i].adremail );
+			
+			if(G_Adm.camera && test_fic(cheminphoto))
+			{	
+				sprintf(cmd, "echo \"ceci est un mail d'alerte !\" | mail -s \"alerte\" -a \"%s\" %s", cheminphoto, G_Contacts.Liste_contact[i].adremail );
+				lib_erreur(0,0,cmd);
+				system(cmd);
+			}
+			sprintf(cheminphoto, "%s/%s.jpg",DIR_IMAGE,nomfickarotz);
+			
+			if(G_Adm.karotz && test_fic(cheminphoto))
+				sprintf(cmd, "echo \"ceci est un mail d'alerte !\" | mail -s \"alerte_karotz\" -a \"%s\" %s", cheminphoto, G_Contacts.Liste_contact[i].adremail );
+			else
+				sprintf(cmd, "echo \"ceci est un mail d'alerte !\" | mail -s \"alerte_karotz\" %s", G_Contacts.Liste_contact[i].adremail );
 			lib_erreur(0,0,cmd);
 			system(cmd);
 		}
@@ -278,10 +300,23 @@ int det_detection(T_Detecteur* detecteur)
 		}
 	}
 	/*On notifie karotz*/
-	sprintf(msg,"Alerte detection %s",detecteur->piece);
-    lib_kartoz_speak(msg);
+	if(G_Adm.karotz)
+	{
+		sprintf(msg,"Alerte detection %s",detecteur->piece);
+		lib_kartoz_speak(msg);
+	}
 
 	lib_erreur(0,0,"FIN det_detection");	
+}
+
+int test_fic(char* cheminfic)
+{
+	if(!access(cheminfic, F_OK))
+		return 0 ;
+	else
+		return 1;
+	
+	
 }
 
 

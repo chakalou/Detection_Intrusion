@@ -160,19 +160,60 @@ class Contact extends SQLiteEntityDectection{
 	}
 
 }
+class Adm extends SQLiteEntityDectection{
+
+	
+	protected $id,$mail,$tel; //Pour rajouter des champs il faut ajouter les variables ici...
+	protected $TABLE_NAME = 'adm'; 	//Penser a mettre le nom du plugin et de la classe ici
+	protected $CLASS_NAME = 'adm';
+	protected $object_fields = 
+	array( //...Puis dans l'array ici mettre nom du champ => type
+		'id'=>'key',
+		'camera'=>'int',
+		'karotz'=>'int'
+	);
+
+	function __construct(){
+		parent::__construct();
+	}
+//Methodes pour recuperer et modifier les champs (set/get)
+	function setId($id){
+		$this->id = $id;
+	}
+	
+	function getId(){
+		return $this->id;
+	}
+
+	function getCamera(){
+		return $this->camera;
+	}
+
+	function setCamera($camera){
+		$this->camera = $camera;
+	}
+	function getKarotz(){
+		return $this->karotz;
+	}
+
+	function setKarotz($karotz){
+		$this->karotz = $karotz;
+	}
+
+}
 
 class ViewDetection extends SQLite3
 {
-	protected $id,$codedetec, $piece, $image, $date ; //Pour rajouter des champs il faut ajouter les variables ici...
+	protected $ID,$codedetec, $piece, $IMAGE, $DATE ; //Pour rajouter des champs il faut ajouter les variables ici...
 	protected $VIEW_NAME = 'v_detection'; 	//Penser a mettre le nom du plugin et de la classe ici
 	protected $CLASS_NAME = 'viewdetection';
 	protected $object_fields = 
 	array( //...Puis dans l'array ici mettre nom du champ => type
-		'id'=>'key',
+		'ID'=>'key',
 		'codedetec'=>'int',
 		'piece'=>'string',
-		'image'=>'string',
-		'date'=>'date'
+		'IMAGE'=>'string',
+		'DATE'=>'date'
 	);
 	private $debug = false;
 	
@@ -229,7 +270,7 @@ class ViewDetection extends SQLite3
 	* @return Aucun retour
 	*/
 	public function create($debug='false'){
-		$query = 'CREATE VIEW IF NOT EXISTS `'.MYSQL_PREFIX.$this->VIEW_NAME.'` as select yana_detection.id,codedetec, piece, image, date from yana_detection, yana_detecteur where yana_detection.id_detecteur=yana_detecteur.id;';
+		$query = 'CREATE VIEW IF NOT EXISTS `'.MYSQL_PREFIX.$this->VIEW_NAME.'` as select yana_detection.id as id,codedetec, piece, image as image, date as date from yana_detection, yana_detecteur where yana_detection.id_detecteur=yana_detecteur.id;';
 		if($this->debug)echo '<hr>'.$this->CLASS_NAME.' ('.__METHOD__ .') : Requete --> '.$query;
 		if(!$this->exec($query)) echo $this->lastErrorMsg();
 	}
@@ -294,6 +335,8 @@ class ViewDetection extends SQLite3
 				$object = eval(' return new '.$this->CLASS_NAME.'();');
 				foreach($this->object_fields as $field=>$type){
 					if(isset($queryReturn[$field])) eval('$object->'.$field .'= html_entity_decode(\''. addslashes($queryReturn[$field]).'\');');
+					else
+						echo '<hr>'.__METHOD__.' : Champs --> '.$field.'<br>';
 				}
 				$objects[] = $object;
 				unset($object);
@@ -383,7 +426,7 @@ class ViewDetection extends SQLite3
 		return $this->debug;
 	}
 	public function getId(){
-		return $this->id;
+		return $this->ID;
 	}
 	public function getCodedetec(){
 		return $this->codedetec;
@@ -392,10 +435,10 @@ class ViewDetection extends SQLite3
 		return $this->piece;
 	}
 	public function getImage(){
-		return $this->image;
+		return $this->IMAGE;
 	}
 	public function getDate(){
-		return $this->date;
+		return $this->DATE;
 	}
 	
 	/**

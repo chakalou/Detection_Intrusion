@@ -18,6 +18,12 @@
 	$table= new contact();
 	$table->create();
 	
+	$table= new adm();
+	$table->create();
+	$table->camera=1;
+	$table->karotz=1;
+	$table->save();
+	
 	$s1 = New Section();
 	$s1->setLabel('detection');
 	$s1->save();

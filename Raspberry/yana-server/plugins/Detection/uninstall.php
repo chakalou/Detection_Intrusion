@@ -13,7 +13,8 @@ $table= new viewDetection();
 $table->drop();
 $table= new contact();
 $table->drop();
-
+$table= new adm();
+$table->drop();
 $table_section = new Section();
 $id_section = $table_section->load(array("label"=>"detection"))->getId();
 $table_section->delete(array('label'=>'detection'));

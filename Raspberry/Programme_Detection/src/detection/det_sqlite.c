@@ -149,10 +149,10 @@ int det_sqlite_createtable(char * nombase)
  /* Creation de la table detection */
 	 strcpy(sql, "DROP TABLE IF EXISTS yana_detection; " 
 		 "CREATE TABLE IF NOT EXISTS yana_detection ( "
-		 "ID  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
-		 "ID_DETECTEUR INTEGER NOT NULL, "
-		 "IMAGE TEXT, "
-		 "DATE DATE NOT NULL);");
+		 "id  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
+		 "id_detecteur INTEGER NOT NULL, "
+		 "image TEXT, "
+		 "date DATE NOT NULL);");
 	lib_erreur(0, 0, sql);
 	
 	if(!det_sqlite_executerequete(nombase, sql))
@@ -218,10 +218,30 @@ int callback_contact(void *GListContact, int argc, char **argv, char **azColName
 		sprintf((( T_Contact_List*)GListContact)->Liste_contact[contactencours].tel,"%s",argv[i] ? argv[i] : "NULL");
 	  else if(!strcmp(azColName[i],"notifysms"))
 		(( T_Contact_List*)GListContact)->Liste_contact[contactencours].notifysms=argv[i] ? atoi(argv[i]) : 0;
-	  else if(!strcmp(azColName[i],"notifysms"))
+	  else if(!strcmp(azColName[i],"notifymail"))
 		(( T_Contact_List*)GListContact)->Liste_contact[contactencours].notifymail=argv[i] ? atoi(argv[i]) : 0;
    }
    (( T_Contact_List*)GListContact)->Nbcontact++;
+   return 0;
+}
+
+int callback_adm(void *GAdm, int argc, char **argv, char **azColName)
+{
+   int i;
+   
+   if(firstinit!=0)
+   {
+		firstinit=1;
+   
+   }
+    for(i=0; i<argc; i++)
+   {
+	  if(!strcmp(azColName[i],"karotz"))
+		(( T_Adm*)GAdm)->karotz=argv[i] ? atoi(argv[i]) : 0;
+	  else if(!strcmp(azColName[i],"camera"))
+		(( T_Adm*)GAdm)->camera=argv[i] ? atoi(argv[i]) : 0;
+   }
+
    return 0;
 }
 
