@@ -8,6 +8,7 @@ Pour la partie réception:
 - Raspberry pi
 - Arduino
 - clef 3G
+- Un karotz jailbreaké (optionnel)
 
 Pour la partie émission
 
