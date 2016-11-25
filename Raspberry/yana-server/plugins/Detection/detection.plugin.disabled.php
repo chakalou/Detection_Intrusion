@@ -19,6 +19,10 @@ function detection_plugin_menu(&$menuItems){
 
 //Cette fonction va generer une page quand on clique sur Détection dans menu
 function detection_plugin_page($_){
+	/*on récupère l'état adm*/
+	$admManager = new Adm();
+	$adm = $admManager->getById(1);
+		
 	if(isset($_['module']) && $_['module']=='detection'){
 	?>
 	<div class="span3 bs-docs-sidebar">
@@ -53,7 +57,7 @@ function detection_plugin_page($_){
 		</table>
 		<?php
 			$viewdetecManager = new ViewDetection();
-			$viewdetecs = $viewdetecManager->populate();
+			$viewdetecs = $viewdetecManager->populate('date');
 		?>
 	    <legend id="tableau">Tableau détection</legend>
 	 <table class="table table-striped table-bordered table-hover">
@@ -62,7 +66,8 @@ function detection_plugin_page($_){
 								<th>Date</th>
 								<th>Code détec</th>
 								<th>Pièce</th>
-								<th>image</th>
+								<?php if($adm->getCamera())echo '<th>image_cam</th>';?>
+								<?php if($adm->getKarotz())echo '<th>image_karotz</th>';?>
 							</tr>
 						</thead>
 
@@ -71,7 +76,8 @@ function detection_plugin_page($_){
 							<td><?php echo $viewdetec->getDate(); ?></td>
 							<td><?php echo $viewdetec->getCodedetec(); ?></td>
 							<td><?php echo $viewdetec->getPiece(); ?></td>
-							<td><?php echo $viewdetec->getImage() ?></td>
+							<?php if($adm->getCamera()) echo '<td><img src="'.$viewdetec->getDirImage().'/'.$viewdetec->getImage().'" style="width:152px;height:114px;"></td>';?>
+							<?php if($adm->getKarotz()) echo '<td><img src="'.$viewdetec->getDirImage().'/karotz_'.$viewdetec->getImage().'" style="width:152px;height:114px;"></td>';?>
 						</tr>
 						<?php } ?>
 						</table>
@@ -181,7 +187,7 @@ function detection_plugin_setting_page(){
 								<table class="table table-striped table-bordered table-hover">
 								<thead>
 								<tr>
-								<td style="text-align: center; vertical-align: middle;"><label for="camera">Activer prise de vue camera raspberry</label></td>
+								<td style="text-align: center; vertical-align: middle;"><label for="camera">Activer photos camera raspberry</label></td>
 								 <td ><input type="checkbox" name="camera" id="camera" value="1" <?if(isset($adm)){if($adm->getCamera()==1){echo 'checked';}}?>/></td>
 								</tr>
 								</table>
@@ -189,8 +195,15 @@ function detection_plugin_setting_page(){
 								<table class="table table-striped table-bordered table-hover">
 								<thead>
 								<tr>
-								<td style="text-align: center; vertical-align: middle;"><label for="karotz">Activer intéraction via Karotz</label></td>
+								<td style="text-align: center; vertical-align: middle;"><label for="karotz">Activer photos Karotz</label></td>
 								<td ><input type="checkbox" name="karotz" id="karotz" value="1" <?if(isset($adm)){if($adm->getKarotz()==1){echo 'checked';}}?>/></td>
+								</tr>
+								</table>
+								<table class="table table-striped table-bordered table-hover">
+								<thead>
+								<tr>
+								<td style="text-align: center; vertical-align: middle;"><label for="karotzvoice">Activer voix Karotz</label></td>
+								<td ><input type="checkbox" name="karotzvoice" id="karotzvoice" value="1" <?if(isset($adm)){if($adm->getKarotzVoice()==1){echo 'checked';}}?>/></td>
 								</tr>
 								</table>
 							</div>
@@ -430,6 +443,14 @@ function detection_action_detection(){
 					else
 					{
 						$adm->setKarotz(0);
+					}
+					if(isset($_['karotzvoice']))
+					{
+						$adm->setKarotzVoice($_['karotzvoice']);
+					}
+					else
+					{
+						$adm->setKarotzVoice(0);
 					}
 				$adm->save();
 				header('location:setting.php?section=detection&block=detec');

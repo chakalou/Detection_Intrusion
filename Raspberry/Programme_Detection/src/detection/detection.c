@@ -300,7 +300,7 @@ int det_detection(T_Detecteur* detecteur)
 		}
 	}
 	/*On notifie karotz*/
-	if(G_Adm.karotz)
+	if(G_Adm.karotzvoice)
 	{
 		sprintf(msg,"Alerte detection %s",detecteur->piece);
 		lib_kartoz_speak(msg);
@@ -312,9 +312,9 @@ int det_detection(T_Detecteur* detecteur)
 int test_fic(char* cheminfic)
 {
 	if(!access(cheminfic, F_OK))
-		return 0 ;
+		return 1 ;
 	else
-		return 1;
+		return 0;
 	
 	
 }

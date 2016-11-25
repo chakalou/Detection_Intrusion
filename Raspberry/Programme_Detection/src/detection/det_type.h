@@ -55,6 +55,7 @@ typedef struct
 {
 	int camera;
 	int karotz;
+	int karotzvoice;
 }T_Adm;
 
 #endif

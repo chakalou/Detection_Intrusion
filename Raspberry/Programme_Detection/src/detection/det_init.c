@@ -67,16 +67,11 @@ void
 det_init()
 {
 	char cmd[256];
-	if(G_Adm.karotz)
-	{
-		lib_erreur(0,0,"lib_kartoz_speak");
-		lib_kartoz_speak("debut detection intrusion");
-		lib_erreur(0,0,"lib_kartoz_set_led");
-		lib_kartoz_set_led(0,"000000",0,"000000");
-	}
+	
 	/*on supprime les anciennes images*/
-	sprintf(cmd, "\\rm /home/pi/Projet/images/ *.jpg\" > /home/pi/Projet/log/cmd.log");
+	sprintf(cmd, "\\rm %s/*.jpg > /home/pi/Projet/log/cmdrm.log",det_env_DIR_IMAGE());
 	lib_erreur(0,0,cmd);
+	system(cmd);
 	
 	lib_erreur(0,0,"det_init: base");
 	/*init nombase*/
@@ -91,6 +86,17 @@ det_init()
 	det_charge_struct_contact();
 	lib_erreur(0,0,"det_init: det_charge_struct_contact");
 	det_charge_struct_adm();
+	
+	if(G_Adm.karotz)
+	{
+		if(G_Adm.karotzvoice)
+		{
+			lib_erreur(0,0,"lib_kartoz_speak");
+			lib_kartoz_speak("debut detection intrusion");
+		}
+		lib_erreur(0,0,"lib_kartoz_set_led");
+		lib_kartoz_set_led(0,"000000",0,"000000");
+	}
 	
 	/*initialisation de la connection serie*/	
 	lib_erreur(0,0,"det_init: port serie");
@@ -190,6 +196,7 @@ det_charge_struct_adm()
 
 	  G_Adm.karotz=-1;
 	  G_Adm.camera=-1;
+	  G_Adm.karotzvoice=-1;
 	
 	
 	strcpy(sqlcmde, "select * from yana_adm; ");
@@ -199,9 +206,10 @@ det_charge_struct_adm()
 	
 	/*On affiche la structure*/
 	
-		sprintf(G_msgerr, "karotz=%d,cam=%d",
+		sprintf(G_msgerr, "karotz=%d,cam=%d, voice=%d",
 		  G_Adm.karotz,
-		  G_Adm.camera);
+		  G_Adm.camera,
+		  G_Adm.karotzvoice);
 		  lib_erreur(0,0,G_msgerr);
 	
 	lib_erreur(0,0,"FIN det_charge_struct_adm ");

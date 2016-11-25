@@ -2,11 +2,11 @@
 *
 * NOM         : det_quit.c
 *
-* PROJET      : Detection
+* PROJET      : PSCL
 * PROCESS     :
 * TYPE        : Include C
 *
-* ECRIT PAR   : LOLIO                   25/06/2013
+* ECRIT PAR   : D. DELEFORTERIE                   25/06/2013
 *
 * MODIFS      :
 *
@@ -78,8 +78,12 @@ static int    cpt_recursif = 0;
     /* Arrete tous les timers */
     /* ---------------------- */
     lib_timer_quit();
-    
+	
+    if(G_Adm.karotzvoice)
 	lib_kartoz_speak("Arret detection intrusion");
+	
+	/*On supprime le cache*/
+	lib_kartoz_delete_cache();
     /* arret de la tache */
     /*-------------------*/
     lib_erreur( 0, 0, "fin det_quit() => exit" );

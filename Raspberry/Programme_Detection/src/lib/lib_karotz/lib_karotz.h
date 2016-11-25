@@ -2,13 +2,13 @@
 *								
 * NOM        : lib_erreur.h
 *
-* PROJET     : Detection
+* PROJET     : PSCL
 *
 * PROCESS    :
 *
 * TYPE       : Include Librairie
 *
-* ECRIT PAR  : LOLIO		
+* ECRIT PAR  : D. DELEFORTERIE		Le: 22/05/2012
 *
 * MODIFS     :
 *
@@ -22,5 +22,6 @@
 int lib_kartoz_speak();
 int lib_kartoz_set_led();
 int lib_kartoz_photo();
+int lib_kartoz_delete_cache();
 
 #endif

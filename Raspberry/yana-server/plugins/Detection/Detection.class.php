@@ -170,7 +170,8 @@ class Adm extends SQLiteEntityDectection{
 	array( //...Puis dans l'array ici mettre nom du champ => type
 		'id'=>'key',
 		'camera'=>'int',
-		'karotz'=>'int'
+		'karotz'=>'int',
+		'karotzvoice'=>'int'
 	);
 
 	function __construct(){
@@ -199,6 +200,13 @@ class Adm extends SQLiteEntityDectection{
 	function setKarotz($karotz){
 		$this->karotz = $karotz;
 	}
+	function getKarotzVoice(){
+		return $this->karotzvoice;
+	}
+
+	function setKarotzVoice($karotzvoice){
+		$this->karotzvoice = $karotzvoice;
+	}
 
 }
 
@@ -209,12 +217,13 @@ class ViewDetection extends SQLite3
 	protected $CLASS_NAME = 'viewdetection';
 	protected $object_fields = 
 	array( //...Puis dans l'array ici mettre nom du champ => type
-		'ID'=>'key',
+		'id'=>'key',
 		'codedetec'=>'int',
 		'piece'=>'string',
-		'IMAGE'=>'string',
-		'DATE'=>'date'
+		'image'=>'string',
+		'date'=>'date'
 	);
+	private $cheminfic='plugins/Detection/img';
 	private $debug = false;
 	
 	function __construct(){
@@ -426,7 +435,7 @@ class ViewDetection extends SQLite3
 		return $this->debug;
 	}
 	public function getId(){
-		return $this->ID;
+		return $this->id;
 	}
 	public function getCodedetec(){
 		return $this->codedetec;
@@ -435,10 +444,13 @@ class ViewDetection extends SQLite3
 		return $this->piece;
 	}
 	public function getImage(){
-		return $this->IMAGE;
+		return $this->image;
 	}
 	public function getDate(){
-		return $this->DATE;
+		return $this->date;
+	}
+	public function getDirImage(){
+		return $this->cheminfic;
 	}
 	
 	/**

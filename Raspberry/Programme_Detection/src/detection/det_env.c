@@ -2,11 +2,11 @@
 *
 * NOM         : det_env.c
 *
-* PROJET      : Detection
+* PROJET      : PSCL
 * PROCESS     :
 * TYPE        : Include C
 *
-* ECRIT PAR   : LOLIO                   25/06/2013
+* ECRIT PAR   : D. DELEFORTERIE                   25/06/2013
 *
 * MODIFS      :
 *
@@ -61,10 +61,9 @@ char *det_env_DIR_IMAGE()
 char *penv;
 
      if ((penv = getenv("DIR_IMAGE")) == NULL) 
-         strcpy(L_directory, "/home/pi/Projet/images");
+         strcpy(L_directory, "/var/www/yana-server/plugins/Detection/img");
      else 
          strcpy(L_directory, penv);
-         
      return(L_directory);
 }
 

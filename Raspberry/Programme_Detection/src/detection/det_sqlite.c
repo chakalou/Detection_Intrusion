@@ -240,6 +240,8 @@ int callback_adm(void *GAdm, int argc, char **argv, char **azColName)
 		(( T_Adm*)GAdm)->karotz=argv[i] ? atoi(argv[i]) : 0;
 	  else if(!strcmp(azColName[i],"camera"))
 		(( T_Adm*)GAdm)->camera=argv[i] ? atoi(argv[i]) : 0;
+	  else if(!strcmp(azColName[i],"karotzvoice"))
+		(( T_Adm*)GAdm)->karotzvoice=argv[i] ? atoi(argv[i]) : 0;
    }
 
    return 0;

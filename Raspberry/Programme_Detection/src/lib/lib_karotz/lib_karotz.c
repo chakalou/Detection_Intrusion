@@ -13,8 +13,7 @@
 * MODIFS     : 
 *
 * DESCRIPTION:
-*    librairie permettant d'envoyer des message au karotz pour le faire parler ou lui faire 
-*    prendre des photos.
+*    Procedure de stockage et affichage des messages d'erreurs.
 *
 ***********************************************************************CBA*/
 #include <errno.h>
@@ -107,6 +106,7 @@ int lib_kartoz_speak(char* p_dialog)
   curl_global_cleanup();
   return 0;
 }
+
 int lib_kartoz_set_led(int p_pulse,char* p_color1,int p_speed, char * p_color2)
 {
   FILE * fp;	
@@ -160,6 +160,93 @@ int lib_kartoz_photo(char* P_dir, char* P_nomfic)
   FILE * fp;	
   CURL *curl;
   CURLcode res;
+  char data[2048], nomsnap[128];
+  char* temp;
+   char line [ 128 ]; 
+    char cmd [ 248 ]; 
+   int i=0;
+ 
+  /* In windows, this will init the winsock stuff */ 
+  curl_global_init(CURL_GLOBAL_ALL);
+ 
+  /* get a curl handle */ 
+  curl = curl_easy_init();
+  if(curl) {
+    /* First set the URL that is about to receive our POST. This URL can
+       just as well be a https:// URL if that is what should receive the
+       data. */ 
+   sprintf(data,"http://karotz/cgi-bin/snapshot_ftp?server=%s&user=%s&password=%s&remote_dir=%s&silent=1&nomfic=%s","192.168.1.100","www-data","j3d1-j3d1",P_dir,P_nomfic);
+    curl_easy_setopt(curl, CURLOPT_URL, data);
+	fp = fopen("/home/pi/Projet/erreur/fic", "w"); //Création de notre fichier
+	curl_easy_setopt(curl,  CURLOPT_WRITEDATA, fp);
+	curl_easy_setopt(curl,  CURLOPT_WRITEFUNCTION, fwrite);
+    /* Now specify the POST data */ 
+	
+	/*curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long) strlen(data));
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS,data);*/
+ 
+    /* Perform the request, res will get the return code */ 
+    res = curl_easy_perform(curl);
+    /* Check for errors */ 
+    if(res != CURLE_OK)
+	{
+		  sprintf(G_msgerr, "curl_easy_perform() failed: %s\n",
+				  curl_easy_strerror(res));
+		  lib_erreur(0,0,G_msgerr);
+		  curl_easy_cleanup(curl);
+			curl_global_cleanup();
+			 fclose(fp);
+		  return 1;
+	}
+ 
+    /* always cleanup */ 
+    curl_easy_cleanup(curl);
+	 fclose(fp);
+	 
+	 /*renomage du fichier*/
+		strcpy(nomsnap,"");
+		fp = fopen ( "/home/pi/Projet/erreur/fic", "r" );
+	   if ( fp != NULL )
+	   {
+		 
+		  while ( fgets ( line, sizeof line, fp ) != NULL ) /* read a line */
+		  {
+				i=9;
+				strcpy(nomsnap,"snapshot_");
+				/*On récupère le nom du fichier*/
+				temp= strstr(line,"snapshot_");
+				 while(temp[i]!='"' && i<127)
+				 {
+					 nomsnap[i]=temp[i];
+					 i++;
+				 }
+				 nomsnap[i]='\0';
+				 
+		  }
+		  fclose ( fp );
+	   }
+	   
+	   if(nomsnap[0]!='\0')
+	   {
+		   sprintf(cmd,"mv %s/%s %s/%s.jpg",P_dir,nomsnap,P_dir, P_nomfic);
+		   lib_erreur(0,0,cmd);
+		   system(cmd);
+		   
+	   }
+  }
+  curl_global_cleanup();
+  
+  if(lib_kartoz_delete_photo())
+	  return 1;
+  
+  return 0;
+}
+
+int lib_kartoz_delete_photo()
+{
+  FILE * fp;	
+  CURL *curl;
+  CURLcode res;
   char data[2048];
  
   /* In windows, this will init the winsock stuff */ 
@@ -171,9 +258,57 @@ int lib_kartoz_photo(char* P_dir, char* P_nomfic)
     /* First set the URL that is about to receive our POST. This URL can
        just as well be a https:// URL if that is what should receive the
        data. */ 
-   sprintf(data,"http://karotz/cgi-bin/snapshot_ftp?server=%s&user=%s&password=%s&remote_dir=%s&silent=1&nomfic=%s","192.168.1.100","pi","j3d1-j3d1",P_dir,P_nomfic);
+   strcpy(data,"http://karotz/cgi-bin/clear_snapshots");
     curl_easy_setopt(curl, CURLOPT_URL, data);
-	fp = fopen("/home/pi/Projet/erreur/fic", "w"); //Création de notre fichier
+	fp = fopen("/home/pi/Projet/erreur/delfic", "w"); //Création de notre fichier
+	curl_easy_setopt(curl,  CURLOPT_WRITEDATA, fp);
+	curl_easy_setopt(curl,  CURLOPT_WRITEFUNCTION, fwrite);
+    /* Now specify the POST data */ 
+	
+	/*curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long) strlen(data));
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS,data);*/
+ 
+    /* Perform the request, res will get the return code */ 
+    res = curl_easy_perform(curl);
+    /* Check for errors */ 
+    if(res != CURLE_OK)
+	{
+		  sprintf(G_msgerr, "curl_easy_perform() failed: %s\n",
+				  curl_easy_strerror(res));
+		  lib_erreur(0,0,G_msgerr);
+		  curl_easy_cleanup(curl);
+			curl_global_cleanup();
+			 fclose(fp);
+		  return 1;
+	}
+ 
+    /* always cleanup */ 
+    curl_easy_cleanup(curl);
+	 fclose(fp);
+  }
+  curl_global_cleanup();
+  return 0;
+}
+
+int lib_kartoz_delete_cache()
+{
+  FILE * fp;	
+  CURL *curl;
+  CURLcode res;
+  char data[2048];
+ 
+  /* In windows, this will init the winsock stuff */ 
+  curl_global_init(CURL_GLOBAL_ALL);
+ 
+  /* get a curl handle */ 
+  curl = curl_easy_init();
+  if(curl) {
+    /* First set the URL that is about to receive our POST. This URL can
+       just as well be a https:// URL if that is what should receive the
+       data. */ 
+   strcpy(data,"http://karotz/cgi-bin/clear_cache");
+    curl_easy_setopt(curl, CURLOPT_URL, data);
+	fp = fopen("/home/pi/Projet/erreur/delcache", "w"); //Création de notre fichier
 	curl_easy_setopt(curl,  CURLOPT_WRITEDATA, fp);
 	curl_easy_setopt(curl,  CURLOPT_WRITEFUNCTION, fwrite);
     /* Now specify the POST data */ 
