@@ -70,7 +70,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <LocalRemoteCopySources>false</LocalRemoteCopySources>
     <NMakeIncludeSearchPath>../../include</NMakeIncludeSearchPath>
-    <RemoteBuildCommandLine>cd $(RemoteRootDir)/$(ProjectName); echo $DIR_ERREUR; make -f Makefile</RemoteBuildCommandLine>
+    <RemoteBuildCommandLine>cd $(RemoteRootDir)/$(ProjectName); make -f Makefile</RemoteBuildCommandLine>
     <RemoteReBuildCommandLine>cd $(RemoteRootDir)/$(ProjectName); make clean; make -f Makefile</RemoteReBuildCommandLine>
     <RemoteCleanCommandLine>cd $(RemoteRootDir)/$(ProjectName); make clean; </RemoteCleanCommandLine>
   </PropertyGroup>
