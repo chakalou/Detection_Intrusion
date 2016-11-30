@@ -39,7 +39,7 @@
 /* Fonctions locales au fichier...      */
 /* ------------------------------------ */
 static void    attrape_signaux();
-static void    debug_signal_recu();
+static void    debug_signal_recu(P_signal);
 
 
 /*XYZ******************************************************************
