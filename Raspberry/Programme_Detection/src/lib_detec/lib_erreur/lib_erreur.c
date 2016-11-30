@@ -46,9 +46,7 @@ char    L_dir_erreur[512];
 / 
 *********************************************************************ZYX*/
 void
-lib_erreur_init( P_nom_process, P_dir_erreur )
-char    *P_nom_process;
-char    *P_dir_erreur;
+lib_erreur_init( char *P_nom_process, char *P_dir_erreur )
 {
 
     if( strlen( P_nom_process ) >= 80 )
@@ -105,10 +103,7 @@ char    *P_dir_erreur;
 / 
 *********************************************************************ZYX*/
 void
-lib_erreur( P_ecran, P_perror, P_message )
-int     P_ecran,
-        P_perror;
-char    *P_message;
+lib_erreur( int P_ecran, int P_perror, char *P_message )
 {
 Date         date;
 char         nom_repertoire[257];
@@ -268,8 +263,7 @@ FILE     *f;
 / 
 *********************************************************************ZYX*/
 int
-lib_erreur_pid_out_fichier( P_nom )
-char    *P_nom;
+lib_erreur_pid_out_fichier(char    *P_nom)
 {
     char    nom_repertoire[257];
     FILE     *f;

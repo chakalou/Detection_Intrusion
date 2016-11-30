@@ -47,12 +47,12 @@ typedef struct
 /* fonctions de lib_date.c */
 /* ----------------------- */
 
-int		lib_date_gps();
-int		lib_date_jour_heure();
-int		lib_date_heure();
-int		lib_date_jour();
+int		lib_date_gps(Date *P_p_d);
+int		lib_date_jour_heure(Date *P_p_d);
+int		lib_date_heure(Heure *P_p_j);
+int		lib_date_jour(Jour *P_p_j);
 
-int		lib_date_plus_1_seconde();
+int		lib_date_plus_1_seconde(Date    *P_p_d);
 
 int		lib_date_nb_jours_ds_mois();
 int		lib_date_num_jour_ds_semaine();

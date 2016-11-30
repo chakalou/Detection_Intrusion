@@ -54,8 +54,7 @@ static int  sextil();
 /     Renvoie le jour, mois, annee, heure ,min, sec cale sur GPS
 *********************************************************************ZYX*/
 int
-lib_date_gps( P_p_d )
-Date *P_p_d;
+lib_date_gps(Date *P_p_d )
 {
           /*********************************************/
           /*  en attendant de posseder l equipement    */
@@ -105,8 +104,7 @@ struct tm    *Stm;
 /     Renvoie le jour, mois, annee, heure ,min, sec de la machine
 *********************************************************************ZYX*/
 int
-lib_date_jour_heure( P_p_d )
-Date *P_p_d;
+lib_date_jour_heure(Date *P_p_d)
 {
     time_t        timeofday;
     struct tm    *Stm;
@@ -153,8 +151,7 @@ Date *P_p_d;
 /     Renvoie heure, minute et seconde de la machine
 *********************************************************************ZYX*/
 int
-lib_date_heure( P_p_h )
-Heure *P_p_h;
+lib_date_heure(Heure *P_p_h)
 {
     long timeofday;
     struct tm *Stm;
@@ -194,8 +191,7 @@ Heure *P_p_h;
 /     renvoie jour, mois, annee de la machine
 *********************************************************************ZYX*/
 int
-lib_date_jour( P_p_j )
-Jour *P_p_j;
+lib_date_jour(Jour *P_p_j)
 {
     long        timeofday;
     struct tm    *Stm;
@@ -234,8 +230,7 @@ Jour *P_p_j;
 /      rajoute 1 seconde a '*P_p_d' . 
 *********************************************************************ZYX*/
 int
-lib_date_plus_1_seconde( P_p_d )
-Date    *P_p_d;
+lib_date_plus_1_seconde(Date    *P_p_d)
 {
 #ifdef INUTILE
     long        timeofday;
