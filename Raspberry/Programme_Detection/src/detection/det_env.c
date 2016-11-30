@@ -11,7 +11,7 @@
 * MODIFS      :
 *
 * DESCRIPTION :
-*    - Fonctions relatives au process diffuse pour acces BD via OCI
+*    - Fonctions relatives au process diffuse pour acces BD via OCI test
 *
 ***********************************************************************CBA*/
 #include "det_incl.h"
