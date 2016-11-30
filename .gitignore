@@ -1,2 +1,8 @@
 database.db
 *.rtpl.php
+/Raspberry/Programme_Detection/src/detection/bin
+/Raspberry/Programme_Detection/src/detection/obj
+/Raspberry/Programme_Detection/src/detection/.vs
+*.db
+*.log
+*.opendb
