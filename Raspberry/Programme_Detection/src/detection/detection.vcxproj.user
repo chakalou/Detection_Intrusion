@@ -1,4 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <RemoteDebuggerCommand>$DIR_BIN/$(ProjectName).x</RemoteDebuggerCommand>
+    <RemoteDebuggerWorkingDirectory>$DIR_BIN</RemoteDebuggerWorkingDirectory>
+    <RemoteDebuggingMode>gdb</RemoteDebuggingMode>
+    <DebuggerFlavor>LinuxDebugger</DebuggerFlavor>
+    <AdditionalDebuggerCommands>handle SIGILL nostop noprint</AdditionalDebuggerCommands>
+    <PreLaunchCommand>
+    </PreLaunchCommand>
+  </PropertyGroup>
 </Project>
