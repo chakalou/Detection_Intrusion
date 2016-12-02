@@ -27,9 +27,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{39CEE81D-C871-47EF-9F7E-3394D2697A7B}</ProjectGuid>
+    <ProjectGuid>{E3C7CC82-39E9-457F-B328-E5D36021C2CF}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>lib_erreur</RootNamespace>
+    <RootNamespace>lib_timer</RootNamespace>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
@@ -70,22 +70,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <LocalRemoteCopySources>false</LocalRemoteCopySources>
     <NMakeIncludeSearchPath>../../../include</NMakeIncludeSearchPath>
-    <RemoteBuildCommandLine>cd $(RemoteRootDir)/$(ProjectName);DIR_INCLUDE=../../../include; export DIR_INCLUDE;make -f Makefile</RemoteBuildCommandLine>
-    <RemoteReBuildCommandLine>cd $(RemoteRootDir)/$(ProjectName);DIR_INCLUDE=../../../include; export DIR_INCLUDE;make clean; make -f Makefile</RemoteReBuildCommandLine>
-    <RemoteCleanCommandLine>cd $(RemoteRootDir)/$(ProjectName); DIR_INCLUDE=../../../include; export DIR_INCLUDE;make clean; </RemoteCleanCommandLine>
+    <RemoteBuildCommandLine>cd $(RemoteRootDir)/$(ProjectName); DIR_INCLUDE=../../../include; export DIR_INCLUDE;make -f Makefile</RemoteBuildCommandLine>
+    <RemoteReBuildCommandLine>cd $(RemoteRootDir)/$(ProjectName); DIR_INCLUDE=../../../include; export DIR_INCLUDE;make clean; make -f Makefile</RemoteReBuildCommandLine>
+    <RemoteCleanCommandLine>cd $(RemoteRootDir)/$(ProjectName); DIR_INCLUDE=../../../include; export DIR_INCLUDE; make clean; </RemoteCleanCommandLine>
   </PropertyGroup>
   <ItemGroup>
     <None Include="Makefile" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="lib_erreur.c" />
+    <ClCompile Include="lib_timer.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lib_erreur.h" />
+    <ClInclude Include="lib_timer.h" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <RemotePreBuildEvent>
-      <Command> cd $(RemoteRootDir)/$(ProjectName);  . ~/.bashrc; </Command>
+      <Command>cd $(RemoteRootDir)/$(ProjectName);  . ~/.bashrc; DIR_INCLUDE=../../../include; export DIR_INCLUDE;</Command>
     </RemotePreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
