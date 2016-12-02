@@ -77,6 +77,12 @@
   <ItemGroup>
     <None Include="Makefile" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lib_timer.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lib_timer.h" />
+  </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <RemotePreBuildEvent>
       <Command>cd $(RemoteRootDir)/$(ProjectName);  . ~/.bashrc; DIR_INCLUDE=../../../include; export DIR_INCLUDE;</Command>
