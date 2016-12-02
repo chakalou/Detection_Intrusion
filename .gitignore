@@ -7,3 +7,4 @@ database.db
 *.log
 *.opendb
 /Raspberry/Programme_Detection/src/lib_detec/.vs
+*.tlog
