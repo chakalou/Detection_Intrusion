@@ -69,19 +69,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <LocalRemoteCopySources>false</LocalRemoteCopySources>
-    <NMakeIncludeSearchPath>../../../include</NMakeIncludeSearchPath>
+    <NMakeIncludeSearchPath>../../../include;../../../lib_linux</NMakeIncludeSearchPath>
     <RemoteBuildCommandLine>cd $(RemoteRootDir)/$(ProjectName); DIR_INCLUDE=../../../include; export DIR_INCLUDE;make -f Makefile</RemoteBuildCommandLine>
     <RemoteReBuildCommandLine>cd $(RemoteRootDir)/$(ProjectName); DIR_INCLUDE=../../../include; export DIR_INCLUDE;make clean; make -f Makefile</RemoteReBuildCommandLine>
     <RemoteCleanCommandLine>cd $(RemoteRootDir)/$(ProjectName); DIR_INCLUDE=../../../include; export DIR_INCLUDE; make clean; </RemoteCleanCommandLine>
   </PropertyGroup>
   <ItemGroup>
     <None Include="Makefile" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="lib_timer.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="lib_timer.h" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <RemotePreBuildEvent>

@@ -69,7 +69,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <LocalRemoteCopySources>false</LocalRemoteCopySources>
-    <NMakeIncludeSearchPath>../../../include</NMakeIncludeSearchPath>
+    <NMakeIncludeSearchPath>../../../include;../../../lib_linux</NMakeIncludeSearchPath>
     <RemoteBuildCommandLine>cd $(RemoteRootDir)/$(ProjectName);DIR_INCLUDE=../../../include; export DIR_INCLUDE;make -f Makefile</RemoteBuildCommandLine>
     <RemoteReBuildCommandLine>cd $(RemoteRootDir)/$(ProjectName);DIR_INCLUDE=../../../include; export DIR_INCLUDE;make clean; make -f Makefile</RemoteReBuildCommandLine>
     <RemoteCleanCommandLine>cd $(RemoteRootDir)/$(ProjectName); DIR_INCLUDE=../../../include; export DIR_INCLUDE;make clean; </RemoteCleanCommandLine>
